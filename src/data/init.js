@@ -4,7 +4,8 @@ mongoose.set('returnOriginal', false);
 mongoose.set("runValidators", true)
 
 //create models
-// require('')
+require("../models/Users");
+require("../models/Notes");
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = process.env;
 console.log("env --> ", process.env.DB_NAME)

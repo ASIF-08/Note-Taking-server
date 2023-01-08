@@ -1,46 +1,37 @@
 require("dotenv").config();
 const express = require("express");
-const { validateHeaderName } = require("http");
-const { dirname } = require("path");
-const app = express();
-const path = require('path')
+const path = require("path");
 const cors = require("cors");
-const {connect} = require('./data/init')
+const { connect } = require('./data/init')
+const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
-app.use(cors())
+app.use(cors());
+app.use(express.static(path.join(process.cwd(), "public")));
 
-app.use (express.static( path.join( process.cwd(), 'public' ) ) );
-// app.get("/",(req,res) => {
-//     res.sendFile(path.join(__dirname,"about.html"))
-// });
-// app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, "about.html"));
-// });
+app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/notes", require("./routes/notes.routes"));
 
-app.get("/api",(req,res) => {
-    res.json({
-        status: "success",
-        data: {
-            name:"asif",
-            email:"asif@gmail.com",
-            token:"tokenabcdefgh",
-            role:"admin"
-        }
-    })
+app.use(function (req, res, next) {
+    res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
+// error handling middlewares
+app.use(require("./middlewares/errors").resourcenNotFound);
+app.use(require("./middlewares/errors").errorHandler);
 
 connect()
     .then(() => {
-        app.listen(3001,()=>{
-        console.log(`started on ${process.env.PORT}`);
+        app.listen(3001, () => {
+            console.log(`started on ${process.env.PORT}`);
         });
     })
-    .catch(error =>{
+    .catch(error => {
         process.exit(1);
     });
 
-app.listen(3000, (req, res) => {
+app.listen(process.env.PORT, (req, res) => {
     console.log("Started!!");
 });
