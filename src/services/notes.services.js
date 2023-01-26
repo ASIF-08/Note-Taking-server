@@ -21,6 +21,10 @@ const starNote = (noteId, stared) => {
     return Notes.findByIdAndUpdate(noteId, {stared: !stared});
 };
 
+const getStaredNotes = (userId) => {
+    return Notes.find({author: userId, stared: true});
+};
+
 const deleteNote = (noteId) => {
     return Notes.findByIdAndDelete(noteId);
 };
@@ -31,5 +35,6 @@ module.exports = {
     getNoteById,
     updateNote,
     starNote,
+    getStaredNotes,
     deleteNote
 };

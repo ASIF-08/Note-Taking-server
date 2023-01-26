@@ -15,7 +15,7 @@ const fetchNotes = async (req, res, next) => {
 
 const createNote = async (req, res, next) => {
     if (Object.keys(req.body).length === 0) {
-        const error = new Error("Request body is missing, and needs to have the new workshop's details");
+        const error = new Error("Request body is missing, and needs to have the new notes's details");
         error.name = Errors.BadRequest;
         return next(error);
     }
@@ -49,7 +49,7 @@ const getNoteById = async (req, res, next) => {
 
 const updateNote = async (req, res, next) => {
     if (Object.keys(req.body).length === 0) {
-        const error = new Error("Request body is missing, and needs to have the new workshop's details");
+        const error = new Error("Request body is missing, and needs to have the new note's details");
         error.name = Errors.BadRequest;
         return next(error);
     }
@@ -88,6 +88,18 @@ const starNote = async (req, res, next) => {
     }
 };
 
+const getStaredNotes = async (req, res, next) => {
+    try{
+        const response = await NotesServices.getStaredNotes(res.locals.claims.userId);
+        res.status(200).json({
+            status: "success",
+            data: response
+        });
+    } catch(err) {
+        return next(err);
+    }
+};
+
 const deleteNote = async (req, res, next) => {
     try {
         const response = await NotesServices.deleteNote(req.params.id);
@@ -106,5 +118,6 @@ module.exports = {
     getNoteById,
     updateNote,
     starNote,
+    getStaredNotes,
     deleteNote
 }
